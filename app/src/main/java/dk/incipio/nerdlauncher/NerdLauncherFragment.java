@@ -1,6 +1,7 @@
 package dk.incipio.nerdlauncher;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -17,6 +19,22 @@ import java.util.List;
 
 public class NerdLauncherFragment extends ListFragment {
     private static final String TAG = "NerdLauncherFragment";
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        ResolveInfo resolveInfo=(ResolveInfo)l.getAdapter().getItem(position);
+        ActivityInfo activityInfo = resolveInfo.activityInfo;
+
+        if (activityInfo == null) {
+            return;
+        }
+
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.setClassName(activityInfo.applicationInfo.packageName, activityInfo.name);
+
+        startActivity(i);
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +55,7 @@ public class NerdLauncherFragment extends ListFragment {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.loadLabel(pm).toString(), rhs.loadLabel(pm).toString());
             }
         });
+
 
         ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(getActivity(), android.R.layout.simple_list_item_1, activities) {
             public View getView(int pos, View convertview, ViewGroup parent) {
