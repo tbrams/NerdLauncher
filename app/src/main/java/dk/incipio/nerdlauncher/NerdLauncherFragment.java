@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class NerdLauncherFragment extends ListFragment {
 
         Intent i = new Intent(Intent.ACTION_MAIN);
         i.setClassName(activityInfo.applicationInfo.packageName, activityInfo.name);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         startActivity(i);
     }
@@ -46,7 +48,7 @@ public class NerdLauncherFragment extends ListFragment {
         PackageManager pm = getActivity().getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(startupIntent, 0);
 
-        Log.i(TAG, "Found " + activities.size() + " activities");
+        Log.i(TAG, "Found a total of " + activities.size() + " activities with ACTION_MAIN & CATEGORY_LAUNCHER");
 
         Collections.sort(activities, new Comparator<ResolveInfo>() {
             @Override
@@ -57,21 +59,29 @@ public class NerdLauncherFragment extends ListFragment {
         });
 
 
-        ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(getActivity(), android.R.layout.simple_list_item_1, activities) {
+        ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(getActivity(), R.layout.rowlayout, activities) {
+
             public View getView(int pos, View convertview, ViewGroup parent) {
+
+                View view = convertview;  // check this first
+                if (view == null) {
+                    view = getActivity().getLayoutInflater().inflate(R.layout.rowlayout, parent, false);
+                }
+                TextView textView = (TextView)view.findViewById(android.R.id.text1);
+
+                // Get text and image from ResolveInfo Object - need packetmgr to do that...
                 PackageManager pm = getActivity().getPackageManager();
-                View v = super.getView(pos, convertview, parent);
+                ResolveInfo resolveInfo = getItem(pos);
+                textView.setText(resolveInfo.loadLabel(pm));
 
-                // Documentation says that simple_list_item_1 is a TextView
-                // Cast it so you can see the text value
-                TextView tv = (TextView)v;
-                ResolveInfo ri = getItem(pos);
-                tv.setText(ri.loadLabel(pm));
+                ImageView imageView = (ImageView) view.findViewById(R.id.icon);
+                imageView.setImageDrawable(resolveInfo.loadIcon(pm));
 
-                return v;
+                return view;
             }
 
         };
+
         setListAdapter(adapter);
 
     }
