@@ -58,7 +58,6 @@ public class NerdLauncherFragment extends ListFragment {
             }
         });
 
-
         ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(getActivity(), R.layout.rowlayout, activities) {
 
             public View getView(int pos, View convertview, ViewGroup parent) {

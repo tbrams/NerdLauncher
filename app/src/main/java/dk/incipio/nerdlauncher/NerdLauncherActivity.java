@@ -29,18 +29,12 @@ public class NerdLauncherActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int pos) {
-            switch(pos) {
-
-                case 0:
-                    if (launcherFragment==null) launcherFragment= new NerdLauncherFragment();
-                    return launcherFragment;
-                case 1:
-                    if (runningFragment==null) runningFragment = new NerdRunningFragment();
-                    return runningFragment;
-
-                default:
-                    if (launcherFragment==null) launcherFragment= new NerdLauncherFragment();
-                    return launcherFragment;
+            if (pos == 1) {
+                if (runningFragment==null) runningFragment = new NerdRunningFragment();
+                return runningFragment;
+            } else {
+                if (launcherFragment==null) launcherFragment= new NerdLauncherFragment();
+                return launcherFragment;
             }
         }
 
