@@ -12,6 +12,8 @@ public class NerdLauncherActivity extends FragmentActivity {
     private static NerdRunningFragment runningFragment = null;
     private static NerdLauncherFragment launcherFragment = null;
 
+    // remove later
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
